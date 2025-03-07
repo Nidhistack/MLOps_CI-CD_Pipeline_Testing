@@ -4,10 +4,10 @@ provider "aws" {
 
 variable "image_tag" {}
 
-data "aws_instances" "existing_flask_server" {
+data "aws_instances" "existing_ci-cd-pipeline" {
   filter {
     name   = "tag:Name"
-    values = ["flask_server"]
+    values = ["ci-cd-pipeline"]
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_security_group" "flask_sg" {
   }
 }
 
-resource "aws_instance" "flask_server" {
+resource "aws_instance" "ci-cd-pipeline" {
   ami           = "ami-04b4f1a9cf54c11d0"
   instance_type = "t2.micro"
   key_name      = "my_key"
@@ -64,7 +64,7 @@ resource "aws_instance" "flask_server" {
   EOF
 
   tags = {
-    Name = "flask_server"
+    Name = "ci-cd-pipeline"
   }
 
   lifecycle {
@@ -72,12 +72,12 @@ resource "aws_instance" "flask_server" {
   }
 }
 
-resource "null_resource" "update_flask_server" {
-  count = length(data.aws_instances.existing_flask_server.ids) > 0 ? 1 : 0
+resource "null_resource" "update_ci-cd-pipeline" {
+  count = length(data.aws_instances.existing_ci-cd-pipeline.ids) > 0 ? 1 : 0
 
   triggers = {
     always_run  = timestamp()
-    instance_id = data.aws_instances.existing_flask_server.ids[0]
+    instance_id = data.aws_instances.existing_ci-cd-pipeline.ids[0]
     image_tag   = var.image_tag
   }
 
@@ -85,18 +85,18 @@ resource "null_resource" "update_flask_server" {
     type        = "ssh"
     user        = "ubuntu"
     private_key = file("./my_key.pem")
-    host        = data.aws_instances.existing_flask_server.public_ips[0]
+    host        = data.aws_instances.existing_ci-cd-pipeline.public_ips[0]
   }
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'Updating Flask server container...'",
+      "echo 'Updating ci-cd pipeline container...'",
 
       "if ! command -v docker &> /dev/null; then sudo apt-get update -y && sudo apt-get install -y docker.io; sudo systemctl start docker; sudo systemctl enable docker; fi",
 
       "if sudo docker ps -a --format '{{.Names}}' | grep -q '^flask-container$'; then sudo docker stop flask-container && sudo docker rm flask-container; fi",
 
-      "sudo docker pull vampconnoisseur/flask-server:${var.image_tag}",
+      "sudo docker pull nidz1606/ci-cd-pipeline:${var.image_tag}",
 
       "sudo docker run -d --name flask-container -p 9876:9876 nidz1606/ci-cd-pipeline:${var.image_tag}"
     ]
@@ -104,7 +104,7 @@ resource "null_resource" "update_flask_server" {
 }
 
 output "public_ip" {
-  value = aws_instance.flask_server.public_ip
+  value = aws_instance.ci-cd-pipeline.public_ip
 }
 
 terraform {

@@ -18,7 +18,7 @@ jobs:
       AWS_REGION: ap-south-1
       DOCKER_HUB_REPO: nidz1606/ci-cd-pipeline
       IMAGE_TAG: ${{ github.run_number }}
-      INSTANCE_NAME: flask-server
+      INSTANCE_NAME: ci-cd-pipeline
       CLIENT_NAME: nidhi_1606
     steps:
       - name: Checkout Code
@@ -63,7 +63,7 @@ jobs:
       - name: Terraform Init
         id: init
         env:
-          AWS_BUCKET_NAME: flask-server-bucket-2
+          AWS_BUCKET_NAME: ci-cd-pipeline-bucket-2
           AWS_BUCKET_KEY_NAME: state/terraform-${{env.CLIENT_NAME}}.tfstate
         run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
 
