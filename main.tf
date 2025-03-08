@@ -38,7 +38,7 @@ resource "aws_security_group" "flask_sg" {
 }
 
 resource "aws_instance" "ci-cd-pipeline" {
-  ami           = "ami-04b4f1a9cf54c11d0"
+  ami           = "ami-05c179eced2eb9b5b"
   instance_type = "t2.micro"
   key_name      = "my_key"
 
