@@ -160,7 +160,7 @@ async def test_route():
     return {"message": "Testing Successful!"}
 
 
-@app.get("/predict")
+@app.route("/predict")
 def predict_route():
     try:
         data = request.get_json()
