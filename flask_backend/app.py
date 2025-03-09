@@ -157,7 +157,7 @@ def send_error(error_message: str, block_id: str):
 
 @app.get("/test")
 async def test_route():
-    return {"message": "Testing Successful!"}
+    return {"message": "The Testing  is Successful!"}
 
 
 @app.route("/predict")
