@@ -25,6 +25,10 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import re
 
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import model  # Import model.py
+
 # Import fetch_s3_file from your s3_utils module
 # from s3_utils import fetch_s3_file
 from queue import Empty
@@ -155,6 +159,20 @@ def send_error(error_message: str, block_id: str):
 async def test_route():
     return {"message": "Hello world!"}
 
+
+@app.get("/predict")
+def predict_route():
+    try:
+        data = request.get_json()
+        sample = data.get("sample")
+        if not sample or len(sample) != 4:
+            return jsonify({"error": "Invalid input. Expected a list of 4 numerical values."}), 400
+        
+        prediction = model.make_prediction(sample)
+        return jsonify({"prediction": prediction})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
