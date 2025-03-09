@@ -40,7 +40,7 @@ resource "aws_security_group" "flask_sg" {
 resource "aws_instance" "ci-cd-pipeline" {
   ami           = "ami-05c179eced2eb9b5b"
   instance_type = "t2.micro"
-  key_name      = file("./my_key.pem")
+  key_name      = "my_key"
 
   vpc_security_group_ids = [aws_security_group.flask_sg.id]
 

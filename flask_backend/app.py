@@ -153,7 +153,7 @@ def send_error(error_message: str, block_id: str):
 
 @app.get("/test")
 async def test_route():
-    return {"message": "Worksssss!!!!!"}
+    return {"message": "Hello world!"}
 
 
 if __name__ == "__main__":
