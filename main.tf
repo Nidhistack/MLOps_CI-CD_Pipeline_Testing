@@ -16,8 +16,8 @@ resource "aws_security_group" "flask_sg" {
   description = "Allow inbound traffic to Flask app"
 
   ingress {
-    from_port   = 9876
-    to_port     = 9876
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -60,7 +60,7 @@ resource "aws_instance" "ci-cd-pipeline" {
             sudo docker pull nidz1606/ci-cd-pipeline:${var.image_tag}
 
             echo "Running new container..."
-            sudo docker run -d --name flask-container -p 9876:9876 nidz1606/ci-cd-pipeline:${var.image_tag}
+            sudo docker run -d --name flask-container -p 8080:8080 nidz1606/ci-cd-pipeline:${var.image_tag}
   EOF
 
   tags = {
@@ -98,7 +98,7 @@ resource "null_resource" "update_ci-cd-pipeline" {
 
       "sudo docker pull nidz1606/ci-cd-pipeline:${var.image_tag}",
 
-      "sudo docker run -d --name flask-container -p 9876:9876 nidz1606/ci-cd-pipeline:${var.image_tag}"
+      "sudo docker run -d --name flask-container -p 8080:8080 nidz1606/ci-cd-pipeline:${var.image_tag}"
     ]
   }
 }
